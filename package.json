@@ -1,0 +1,23 @@
+{
+  "name": "i-sys_lesson-twitter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlG-off/i-sys_lesson-twitter.git"
+  },
+  "author": "Gerasimov Aleksey",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlG-off/i-sys_lesson-twitter/issues"
+  },
+  "homepage": "https://github.com/AlG-off/i-sys_lesson-twitter#readme",
+  "dependencies": {
+    "axios": "^0.16.1",
+    "express": "^4.15.3"
+  }
+}
