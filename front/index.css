@@ -1,0 +1,23 @@
+body {
+    background: #D3D3D3;
+}
+.title-group {
+
+}
+
+.entry-group {
+    display: block;
+    width: 50%;
+    background: #fff;
+    height: 300px;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.entry-group img {
+    width: 100%;
+    display: block;
+}
+.entry-group p {
+    padding: 10px;
+}

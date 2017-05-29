@@ -9,13 +9,14 @@ const {ID_APP, SECRET_KEY, URL_VKAPI} = require('./constants/vk');
 function run() {
     const app = express();
 
+    app.use('/wall-group', express.static(path.join(__dirname, 'front')));
     app.use(cookieParser());
 
     app.get('/', (req, res) => {
         const {token} = req.cookies;
 
         if (token) {
-            res.redirect('/wall');
+            res.redirect('/wall-group/index.html');
         } else {
             res.send(`<button onclick="(() => { window.location = '/vkapi' })()">Go VK</button>`)
         }
@@ -41,7 +42,7 @@ function run() {
             }).then(response => {
                 const {access_token} = response.data;
                 res.cookie('token', access_token);
-                res.redirect('/wall')
+                res.redirect('/wall-group')
 
             }).catch(function (error) {
                 console.error('error request', error);
@@ -52,8 +53,8 @@ function run() {
         }
     });
 
-    app.get('/wall', (req, res) => {
-        const {token} = req.cookies;
+    app.get('/wall-api', (req, res) => {
+        const { token } = req.cookies;
 
         axios({
             url: 'https://api.vk.com/method/groups.get',
@@ -75,20 +76,8 @@ function run() {
                 }
             });
         }).then(response => {
-            const resData = response.data.response.wall;
+            res.json(response.data.response)
 
-            let html = '<ul>';
-
-            resData.forEach((item, i) => {
-                if (i === 0) return;
-
-                html += `<li>${item.text}</li>`;
-
-            });
-
-            html += '</ul>';
-
-            res.send(html);
         }).catch(error => {
             console.error(error);
         });
