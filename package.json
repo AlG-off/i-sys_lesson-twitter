@@ -18,6 +18,7 @@
   "homepage": "https://github.com/AlG-off/i-sys_lesson-twitter#readme",
   "dependencies": {
     "axios": "^0.16.1",
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.3"
   }
 }

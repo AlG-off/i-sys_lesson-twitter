@@ -1,64 +1,102 @@
-const express = require('express');
-const axios = require('axios');
-const app = express();
+const
+    express = require('express'),
+    axios = require('axios'),
+    path = require('path'),
+    cookieParser = require('cookie-parser');
 
-/*app.use(function (req, res, next) {
- res.header("Access-Control-Allow-Origin", "*");
- res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
- next();
- });*/
+const {ID_APP, SECRET_KEY, URL_VKAPI} = require('./constants/vk');
 
-app.get('/', function (req, res) {
-    const token = req.cookies && req.cookies.token;
-    if (token) {
-        res.redirect('http://localhost:3000/dialogs');
-    } else {
-        res.send('<button onclick="(function () { window.location = `http://localhost:3000/oauthvk`; })()">Go VK</button>')
-    }
-});
+function run() {
+    const app = express();
 
-app.get('/oauthvk', function (req, res) {
-    res.redirect('https://oauth.vk.com/authorize?client_id=6045574&display=page&redirect_uri=http://localhost:3000/vkapi&scope=327680&response_type=code&v=5.64');
-});
+    app.use(cookieParser());
 
-app.get('/vkapi', function (req, res) {
-    if (req.query.error) {
-        console.error('error');
-        res.send({err: req.query.error, err_des: req.query.error_description});
-        return;
-    }
+    app.get('/', (req, res) => {
+        const {token} = req.cookies;
 
-    if (req.query.code) {
-        console.log('request on token');
-        axios.get('https://oauth.vk.com/access_token?client_id=6045574&client_secret=lC3FU5bZRCLSjNwZX3yv&redirect_uri=http://localhost:3000/vkapi&code=' + req.query.code)
-            .then(function (response) {
-                const data = response.data;
-                res.cookie('token', data.access_token, {domain: 'localhost:3000', maxAge: 900000});
-                // res.redirect('http://localhost:3000/dialogs');
-                return axios.get('https://api.vk.com/method/groups.get?user_id=' + data.user_id + '&count=1&access_token=' + data.access_token);
+        if (token) {
+            res.redirect('/wall');
+        } else {
+            res.send(`<button onclick="(() => { window.location = '/vkapi' })()">Go VK</button>`)
+        }
+    });
+
+    app.get('/vkapi', (req, res) => {
+        const {code, error, error_description} = req.query;
+
+        if (error) {
+            console.error('error');
+            res.send({error, error_description});
+            return;
+        }
+
+        if (code) {
+            axios.get('https://oauth.vk.com/access_token', {
+                params: {
+                    client_id: ID_APP,
+                    client_secret: SECRET_KEY,
+                    redirect_uri: URL_VKAPI,
+                    code
+                }
+            }).then(response => {
+                const {access_token} = response.data;
+                res.cookie('token', access_token);
+                res.redirect('/wall')
+
+            }).catch(function (error) {
+                console.error('error request', error);
+                res.redirect('/')
             })
-            .then(function (response) {
-                const data = response.data;
-                return axios.get('https://api.vk.com/method/groups.get?user_id=' + data.user_id + '&count=1&access_token=' + data.access_token);
-            })
-            .catch(function (error) {
-                console.log('error');
-            })
-    }
-});
+        } else {
+            res.redirect(`https://oauth.vk.com/authorize?client_id=${ID_APP}&display=page&redirect_uri=${URL_VKAPI}&scope=327680&response_type=code&v=5.64`);
+        }
+    });
 
-/*app.get('/dialogs', function (req, res) {
-    const token = req.cookies.token;
-    console.log(token);
-    res.send('<h3>Dialogs</h3>')
-});*/
+    app.get('/wall', (req, res) => {
+        const {token} = req.cookies;
 
-//return axios.get('https://api.vk.com/method/groups.get?user_id=' + data.user_id + '&count=1&access_token=' + data.access_token)
+        axios({
+            url: 'https://api.vk.com/method/groups.get',
+            params: {
+                user_id: ID_APP,
+                access_token: token,
+                count: 1
+            }
+        }).then(response => {
+            const {response: resData} = response.data;
 
-app.run = function () {
-    app.listen(3000, function () {
+            return axios({
+                url: 'https://api.vk.com/method/wall.get',
+                params: {
+                    owner_id: `-${resData[1]}`,
+                    count: 5,
+                    extended: 1,
+                    fields: 'name'
+                }
+            });
+        }).then(response => {
+            const resData = response.data.response.wall;
+
+            let html = '<ul>';
+
+            resData.forEach((item, i) => {
+                if (i === 0) return;
+
+                html += `<li>${item.text}</li>`;
+
+            });
+
+            html += '</ul>';
+
+            res.send(html);
+        }).catch(error => {
+            console.error(error);
+        });
+    });
+
+    app.listen(3000, () => {
         console.log('Example app listening on port 3000!');
     });
-};
+}
 
-module.exports = app;
+module.exports = {run};
