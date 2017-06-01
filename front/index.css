@@ -1,15 +1,20 @@
 body {
     background: #D3D3D3;
 }
-.title-group {
 
+#root {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .entry-group {
     display: block;
-    width: 50%;
+    width: 70%;
+    max-width: 1024px;
     background: #fff;
-    height: 300px;
+    height: 631px;
     margin: 10px;
     overflow: hidden;
 }
@@ -18,6 +23,7 @@ body {
     width: 100%;
     display: block;
 }
+
 .entry-group p {
     padding: 10px;
 }
