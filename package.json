@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "run:dev": "webpack",
-    "lint": "eslint lib/**"
+    "start": "webpack && node public/back.bundle.js"
   },
   "repository": {
     "type": "git",
