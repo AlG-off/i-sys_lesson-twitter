@@ -22,5 +22,6 @@ module.exports = {
   node: {
     net: 'empty',
     fs: 'empty'
-  }
+  },
+  target: 'node'
 };
