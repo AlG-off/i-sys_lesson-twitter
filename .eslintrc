@@ -1,10 +1,12 @@
 {
   "extends": "airbnb-base",
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
     "node": true
   },
   "rules": {
+    "strict": 0,
     "no-shadow": 1,
     "one-var": [
       0,
@@ -25,6 +27,17 @@
     "no-case-declarations": 1,
     "default-case": 1,
     "no-use-before-define": 0,
-    "func-name-matching": 1
+    "func-name-matching": 1,
+    "quotes": [
+      2,
+      "single",
+      {
+        "allowTemplateLiterals": true
+      }
+    ],
+    "comma-dangle": [
+      2,
+      "never"
+    ]
   }
 }

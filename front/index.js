@@ -1,6 +1,7 @@
-import axios from 'axios';
+// import axios from 'axios';
 
 (function() {
+// eslint-disable-next-line no-undef
   axios.get('/wall-api')
         .then(res => {
           const { data } = res;

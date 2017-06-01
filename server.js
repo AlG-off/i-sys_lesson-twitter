@@ -18,7 +18,7 @@ function run() {
     if (token) {
       res.redirect('/wall-group/index.html');
     } else {
-      res.send('<button onclick="(() => { window.location = \'/vkapi\' })()">Go VK</button>');
+      res.send(`<button onclick="(() => { window.location = '/vkapi'})()">Go VK</button>`);
     }
   });
 
@@ -37,8 +37,8 @@ function run() {
           client_id: ID_APP,
           client_secret: SECRET_KEY,
           redirect_uri: URL_VKAPI,
-          code,
-        },
+          code
+        }
       }).then(response => {
         const { access_token } = response.data;
         res.cookie('token', access_token);
@@ -59,8 +59,8 @@ function run() {
       url: 'https://api.vk.com/method/groups.get',
       params: {
         access_token: token,
-        count: 1,
-      },
+        count: 1
+      }
     }).then(response => {
       const { response: resData } = response.data;
 
@@ -70,8 +70,8 @@ function run() {
           owner_id: `-${resData[1]}`,
           count: 5,
           extended: 1,
-          fields: 'name',
-        },
+          fields: 'name'
+        }
       });
     }).then(response => {
       res.json(response.data.response);
