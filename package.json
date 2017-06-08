@@ -18,9 +18,10 @@
   "homepage": "https://github.com/AlG-off/i-sys_lesson-twitter#readme",
   "dependencies": {
     "axios": "^0.16.1",
+    "babel-core": "^6.7.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
-    "babel-core": "^6.7.2"
+    "webpack-merge": "^4.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",
